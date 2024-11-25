@@ -8,6 +8,12 @@
 	"icon": "calendar",
 	"description": "Add a Copyright date to a post or page.",
 	"example": {},
+	"attributes": {
+		"startingYear":{
+			"type": "string",
+			"default": 2000
+		}
+	},
 	"supports": {
 		"html": false
 	},

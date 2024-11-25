@@ -1,10 +1,10 @@
 /**
  * React hook that is used to mark the block wrapper element.
- * It provides all the necessary props like the class name.
+ * It providers all the necessary props like the class name.
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
-import { useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps } from "@wordpress/block-editor";
 
 /**
  * The save function defines the way in which the different attributes should
@@ -15,11 +15,12 @@ import { useBlockProps } from '@wordpress/block-editor';
  *
  * @return {Element} Element to render.
  */
-export default function save() {
+export default function save(attributes) {
+	const { startingYear } = attributes;
 	const currentYear = new Date().getFullYear().toString();
 	return (
-		<p { ...useBlockProps.save() }>
-			{ 'Copyright' } &copy; 2019 - { currentYear }
+		<p {...useBlockProps.save()}>
+			{"Copyright"} &copy; {startingYear} - {currentYear}
 		</p>
 	);
 }
