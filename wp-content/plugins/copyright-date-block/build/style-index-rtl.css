@@ -7,8 +7,7 @@
  *
  * Replace them with your own styles or remove the file completely.
  */
-.wp-block-create-block-copyright-date-block {
-  background-color: #21759b;
-  color: #fff;
-  padding: 2px;
+.wp-block-copyright-date-copyright-date-block {
+  border: 1px solid #111;
+  padding: 5px;
 }
