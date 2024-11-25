@@ -9,9 +9,9 @@
 	"description": "Add a Copyright date to a post or page.",
 	"example": {},
 	"attributes": {
-		"startingYear":{
+		"startingYear": {
 			"type": "string",
-			"default": 2000
+			"default": "2000"
 		}
 	},
 	"supports": {
