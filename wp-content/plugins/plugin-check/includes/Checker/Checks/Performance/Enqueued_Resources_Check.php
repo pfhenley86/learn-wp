@@ -31,10 +31,7 @@ class Enqueued_Resources_Check extends Abstract_PHP_CodeSniffer_Check {
 	 * @return array The categories for the check.
 	 */
 	public function get_categories() {
-		return array(
-			Check_Categories::CATEGORY_PLUGIN_REPO,
-			Check_Categories::CATEGORY_PERFORMANCE,
-		);
+		return array( Check_Categories::CATEGORY_PLUGIN_REPO );
 	}
 
 	/**

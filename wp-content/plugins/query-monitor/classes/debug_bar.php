@@ -60,15 +60,11 @@ class Debug_Bar {
 		$dispatcher = QM_Dispatchers::get( 'html' );
 
 		if ( $this->panels && $dispatcher && $dispatcher::user_can_view() ) {
-			wp_print_inline_script_tag(
-				sprintf(
-					"var ajaxurl = '%s';",
-					esc_url_raw( admin_url( 'admin-ajax.php' ) )
-				),
-				array(
-					'id' => 'query-monitor-inline-debug-bar',
-				)
-			);
+			?>
+			<script type="text/javascript">
+			var ajaxurl = '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>';
+			</script>
+			<?php
 		}
 	}
 

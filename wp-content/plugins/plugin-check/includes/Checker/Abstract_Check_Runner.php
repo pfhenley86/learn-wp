@@ -310,6 +310,8 @@ abstract class Abstract_Check_Runner implements Check_Runner {
 	 * @throws Exception Thrown exception when preparation fails.
 	 */
 	final public function prepare() {
+		$cleanup_functions = array();
+
 		if ( $this->initialized_early ) {
 			/*
 			 * When initialized early, plugins are not loaded yet when this method is called.
@@ -332,9 +334,9 @@ abstract class Abstract_Check_Runner implements Check_Runner {
 			$initialize_runtime = $this->has_runtime_check( $this->get_checks_to_run() );
 		}
 
-		$cleanup_functions = array();
 		if ( $initialize_runtime ) {
-			$cleanup_functions = $this->initialize_runtime();
+			$preparation         = new Universal_Runtime_Preparation( $this->get_check_context() );
+			$cleanup_functions[] = $preparation->prepare();
 		}
 
 		if ( $this->delete_plugin_folder ) {
@@ -358,12 +360,22 @@ abstract class Abstract_Check_Runner implements Check_Runner {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @global wpdb   $wpdb         WordPress database abstraction object.
+	 * @global string $table_prefix The database table prefix.
+	 *
 	 * @return Check_Result An object containing all check results.
 	 */
 	final public function run() {
+		global $wpdb, $table_prefix;
 		$checks       = $this->get_checks_to_run();
 		$preparations = $this->get_shared_preparations( $checks );
 		$cleanups     = array();
+		$old_prefix   = null;
+
+		// Set the correct test database prefix if required.
+		if ( $this->has_runtime_check( $checks ) ) {
+			$old_prefix = $wpdb->set_prefix( $table_prefix . 'pc_' );
+		}
 
 		// Prepare all shared preparations.
 		foreach ( $preparations as $preparation ) {
@@ -377,6 +389,11 @@ abstract class Abstract_Check_Runner implements Check_Runner {
 			foreach ( $cleanups as $cleanup ) {
 				$cleanup();
 			}
+		}
+
+		// Restore the old prefix.
+		if ( $old_prefix ) {
+			$wpdb->set_prefix( $old_prefix );
 		}
 
 		return $results;
@@ -470,18 +487,6 @@ abstract class Abstract_Check_Runner implements Check_Runner {
 		}
 
 		return $collection->to_map();
-	}
-
-	/**
-	 * Initializes the runtime environment so that runtime checks can be run against a separate set of database tables.
-	 *
-	 * @since 1.3.0
-	 *
-	 * @return callable[] Array of cleanup functions to run after the process has completed.
-	 */
-	protected function initialize_runtime(): array {
-		$preparation = new Universal_Runtime_Preparation( $this->get_check_context() );
-		return array( $preparation->prepare() );
 	}
 
 	/**

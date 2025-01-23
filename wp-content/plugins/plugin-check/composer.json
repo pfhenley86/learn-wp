@@ -4,9 +4,9 @@
   "license": "GPL-2.0-or-later",
   "type": "wordpress-plugin",
   "require": {
-    "php": ">=7.4",
+    "php": ">=7.2.24",
     "ext-json": "*",
-    "afragen/wordpress-plugin-readme-parser": "dev-master#c3758599348148be684b3c4ad1105d09b6230d51",
+    "afragen/wordpress-plugin-readme-parser": "dev-master#67fba498d0b112acf84386b95e4905c539a33f0b",
     "automattic/vipwpcs": "^3.0.0",
     "composer/installers": "^2.2",
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
@@ -22,10 +22,7 @@
     "szepeviktor/phpstan-wordpress": "^1.1",
     "wp-cli/extension-command": "^2.1",
     "wp-cli/wp-cli": "^2.8",
-    "wp-cli/wp-cli-tests": "^4.2.9",
-    "wp-cli/language-command": "^2.0",
-    "wp-cli/i18n-command": "^2.6",
-    "wp-cli/entity-command": "^2.8"
+    "wp-cli/wp-cli-tests": "^4.2.9"
   },
   "repositories": [
     {
@@ -56,7 +53,7 @@
       "phpstan/extension-installer": true
     },
     "platform": {
-      "php": "7.4"
+      "php": "7.2.24"
     }
   },
   "scripts": {
