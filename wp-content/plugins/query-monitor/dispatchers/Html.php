@@ -303,15 +303,9 @@ class QM_Dispatcher_Html extends QM_Dispatcher {
 			);
 
 			echo '<!-- Begin Query Monitor output -->' . "\n\n";
-			wp_print_inline_script_tag(
-				sprintf(
-					'var qm = %s;',
-					wp_json_encode( $json )
-				),
-				array(
-					'id' => 'query-monitor-inline-data',
-				)
-			);
+			echo '<script type="text/javascript">' . "\n\n";
+			echo 'var qm = ' . json_encode( $json ) . ';' . "\n\n";
+			echo '</script>' . "\n\n";
 			echo '<div id="query-monitor-ceased"></div>';
 			echo '<!-- End Query Monitor output -->' . "\n\n";
 			return;
@@ -412,15 +406,9 @@ class QM_Dispatcher_Html extends QM_Dispatcher {
 		);
 
 		echo '<!-- Begin Query Monitor output -->' . "\n\n";
-		wp_print_inline_script_tag(
-			sprintf(
-				'var qm = %s;',
-				wp_json_encode( $json )
-			),
-			array(
-				'id' => 'query-monitor-inline-data',
-			)
-		);
+		echo '<script type="text/javascript">' . "\n\n";
+		echo 'var qm = ' . json_encode( $json ) . ';' . "\n\n";
+		echo '</script>' . "\n\n";
 
 		echo '<svg id="qm-icon-container">';
 		foreach ( (array) glob( $this->qm->plugin_path( 'assets/icons/*.svg' ) ) as $icon ) {
@@ -448,7 +436,7 @@ class QM_Dispatcher_Html extends QM_Dispatcher {
 		echo '<div id="qm-title" class="qm-resizer">';
 		echo '<h1 class="qm-title-heading">' . esc_html__( 'Query Monitor', 'query-monitor' ) . '</h1>';
 		echo '<div class="qm-title-heading">';
-		echo '<select id="qm-title-heading-select">';
+		echo '<select>';
 
 		printf(
 			'<option value="%1$s">%2$s</option>',
@@ -745,9 +733,9 @@ class QM_Dispatcher_Html extends QM_Dispatcher {
 		echo '</div>'; // #qm-panels
 		echo '</div>'; // #qm-wrapper
 		echo '</div>'; // #query-monitor-main
-		echo "\n\n";
 
-		wp_print_inline_script_tag( <<<JS
+		echo '<script type="text/javascript">' . "\n\n";
+		?>
 		window.addEventListener('load', function() {
 			var main = document.getElementById( 'query-monitor-main' );
 			var broken = document.getElementById( 'qm-broken' );
@@ -784,11 +772,8 @@ class QM_Dispatcher_Html extends QM_Dispatcher {
 				main.className += ' qm-peek';
 			}
 		} );
-		JS,
-			array(
-				'id' => 'query-monitor-inline-worst-case',
-			)
-		);
+		<?php
+		echo '</script>' . "\n\n";
 		echo '<!-- End Query Monitor output -->' . "\n\n";
 
 	}

@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'wordpress/plugin-check',
-        'pretty_version' => '1.3.1',
-        'version' => '1.3.1.0',
-        'reference' => 'b7b19ceb10169b4efbc419f8c38381f0d58ba8fd',
+        'pretty_version' => '1.2.0',
+        'version' => '1.2.0.0',
+        'reference' => '907908524c86625d2c2d9d273a7ee16896b72634',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'afragen/wordpress-plugin-readme-parser' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'c3758599348148be684b3c4ad1105d09b6230d51',
+            'reference' => '67fba498d0b112acf84386b95e4905c539a33f0b',
             'type' => 'library',
             'install_path' => __DIR__ . '/../afragen/wordpress-plugin-readme-parser',
             'aliases' => array(
@@ -103,9 +103,9 @@
             'dev_requirement' => false,
         ),
         'wordpress/plugin-check' => array(
-            'pretty_version' => '1.3.1',
-            'version' => '1.3.1.0',
-            'reference' => 'b7b19ceb10169b4efbc419f8c38381f0d58ba8fd',
+            'pretty_version' => '1.2.0',
+            'version' => '1.2.0.0',
+            'reference' => '907908524c86625d2c2d9d273a7ee16896b72634',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

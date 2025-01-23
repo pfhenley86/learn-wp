@@ -13,6 +13,8 @@ use WordPress\Plugin_Check\Checker\Check_Categories;
 use WordPress\Plugin_Check\Checker\Check_Repository;
 use WordPress\Plugin_Check\Checker\CLI_Runner;
 use WordPress\Plugin_Check\Checker\Default_Check_Repository;
+use WordPress\Plugin_Check\Checker\Runtime_Check;
+use WordPress\Plugin_Check\Checker\Runtime_Environment_Setup;
 use WordPress\Plugin_Check\Plugin_Context;
 use WordPress\Plugin_Check\Utilities\Plugin_Request_Utility;
 use WP_CLI;
@@ -111,12 +113,6 @@ final class Plugin_Check_Command {
 	 * [--warning-severity=<warning-severity>]
 	 * : Warning severity level.
 	 *
-	 * [--include-low-severity-errors]
-	 * : Include errors with lower severity than the threshold as other type.
-	 *
-	 * [--include-low-severity-warnings]
-	 * : Include warnings with lower severity than the threshold as other type.
-	 *
 	 * [--slug=<slug>]
 	 * : Slug to override the default.
 	 *
@@ -144,17 +140,15 @@ final class Plugin_Check_Command {
 		$options = $this->get_options(
 			$assoc_args,
 			array(
-				'checks'                        => '',
-				'format'                        => 'table',
-				'ignore-warnings'               => false,
-				'ignore-errors'                 => false,
-				'include-experimental'          => false,
-				'severity'                      => '',
-				'error-severity'                => '',
-				'warning-severity'              => '',
-				'include-low-severity-errors'   => false,
-				'include-low-severity-warnings' => false,
-				'slug'                          => '',
+				'checks'               => '',
+				'format'               => 'table',
+				'ignore-warnings'      => false,
+				'ignore-errors'        => false,
+				'include-experimental' => false,
+				'severity'             => '',
+				'error-severity'       => '',
+				'warning-severity'     => '',
+				'slug'                 => '',
 			)
 		);
 
@@ -198,14 +192,23 @@ final class Plugin_Check_Command {
 			);
 		}
 
+		$checks_to_run = array();
 		try {
 			$runner->set_experimental_flag( $options['include-experimental'] );
 			$runner->set_check_slugs( $checks );
 			$runner->set_plugin( $plugin );
 			$runner->set_categories( $categories );
 			$runner->set_slug( $options['slug'] );
+
+			$checks_to_run = $runner->get_checks_to_run();
 		} catch ( Exception $error ) {
 			WP_CLI::error( $error->getMessage() );
+		}
+
+		if ( $this->has_runtime_check( $checks_to_run ) ) {
+			WP_CLI::line( __( 'Setting up runtime environment.', 'plugin-check' ) );
+			$runtime_setup = new Runtime_Environment_Setup();
+			$runtime_setup->set_up();
 		}
 
 		$result = false;
@@ -215,10 +218,20 @@ final class Plugin_Check_Command {
 		} catch ( Exception $error ) {
 			Plugin_Request_Utility::destroy_runner();
 
+			if ( isset( $runtime_setup ) ) {
+				$runtime_setup->clean_up();
+				WP_CLI::line( __( 'Cleaning up runtime environment.', 'plugin-check' ) );
+			}
+
 			WP_CLI::error( $error->getMessage() );
 		}
 
 		Plugin_Request_Utility::destroy_runner();
+
+		if ( isset( $runtime_setup ) ) {
+			$runtime_setup->clean_up();
+			WP_CLI::line( __( 'Cleaning up runtime environment.', 'plugin-check' ) );
+		}
 
 		// Get errors and warnings from the results.
 		$errors = array();
@@ -243,10 +256,8 @@ final class Plugin_Check_Command {
 		$formatter = $this->get_formatter( $assoc_args, $default_fields );
 
 		// Severity.
-		$error_severity                = ! empty( $options['error-severity'] ) ? $options['error-severity'] : $options['severity'];
-		$warning_severity              = ! empty( $options['warning-severity'] ) ? $options['warning-severity'] : $options['severity'];
-		$include_low_severity_errors   = ! empty( $options['include-low-severity-errors'] ) ? true : false;
-		$include_low_severity_warnings = ! empty( $options['include-low-severity-warnings'] ) ? true : false;
+		$error_severity   = ! empty( $options['error-severity'] ) ? $options['error-severity'] : $options['severity'];
+		$warning_severity = ! empty( $options['warning-severity'] ) ? $options['warning-severity'] : $options['severity'];
 
 		// Print the formatted results.
 		// Go over all files with errors first and print them, combined with any warnings in the same file.
@@ -259,7 +270,7 @@ final class Plugin_Check_Command {
 			$file_results = $this->flatten_file_results( $file_errors, $file_warnings );
 
 			if ( '' !== $error_severity || '' !== $warning_severity ) {
-				$file_results = $this->get_filtered_results_by_severity( $file_results, intval( $error_severity ), intval( $warning_severity ), $include_low_severity_errors, $include_low_severity_warnings );
+				$file_results = $this->get_filtered_results_by_severity( $file_results, intval( $error_severity ), intval( $warning_severity ) );
 			}
 
 			if ( ! empty( $file_results ) ) {
@@ -272,7 +283,7 @@ final class Plugin_Check_Command {
 			$file_results = $this->flatten_file_results( array(), $file_warnings );
 
 			if ( '' !== $error_severity || '' !== $warning_severity ) {
-				$file_results = $this->get_filtered_results_by_severity( $file_results, intval( $error_severity ), intval( $warning_severity ), $include_low_severity_errors, $include_low_severity_warnings );
+				$file_results = $this->get_filtered_results_by_severity( $file_results, intval( $error_severity ), intval( $warning_severity ) );
 			}
 
 			if ( ! empty( $file_results ) ) {
@@ -555,7 +566,6 @@ final class Plugin_Check_Command {
 				foreach ( $column_errors as $column_error ) {
 
 					$column_error['message'] = str_replace( array( '<br>', '<strong>', '</strong>', '<code>', '</code>' ), array( ' ', '', '', '`', '`' ), $column_error['message'] );
-					$column_error['message'] = html_entity_decode( $column_error['message'] );
 
 					$file_results[] = array_merge(
 						$column_error,
@@ -633,36 +643,47 @@ final class Plugin_Check_Command {
 	}
 
 	/**
+	 * Checks for a Runtime_Check in a list of checks.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $checks An array of Check instances.
+	 * @return bool True if a Runtime_Check exists in the array, false if not.
+	 */
+	private function has_runtime_check( array $checks ) {
+		foreach ( $checks as $check ) {
+			if ( $check instanceof Runtime_Check ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Returns check results filtered by severity level.
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param array $results                       Check results.
-	 * @param int   $error_severity                Error severity level.
-	 * @param int   $warning_severity              Warning severity level.
-	 * @param bool  $include_low_severity_errors   Include less level of severity issues as warning.
-	 * @param bool  $include_low_severity_warnings Include less level of severity issues as warning.
-	 *
-	 * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+	 * @param array $results          Check results.
+	 * @param int   $error_severity   Error severity level.
+	 * @param int   $warning_severity Warning severity level.
 	 * @return array Filtered results.
 	 */
-	private function get_filtered_results_by_severity( $results, $error_severity, $warning_severity, $include_low_severity_errors = false, $include_low_severity_warnings = false ) {
-		$errors   = array();
-		$warnings = array();
-
-		foreach ( $results as $item ) {
-			if ( 'ERROR' === $item['type'] && $item['severity'] >= $error_severity ) {
-				$errors[] = $item;
-			} elseif ( $include_low_severity_errors && 'ERROR' === $item['type'] && $item['severity'] < $error_severity ) {
-				$item['type'] = 'ERROR_LOW_SEVERITY';
-				$errors[]     = $item;
-			} elseif ( $include_low_severity_warnings && 'WARNING' === $item['type'] && $item['severity'] < $warning_severity ) {
-				$item['type'] = 'WARNING_LOW_SEVERITY';
-				$warnings[]   = $item;
-			} elseif ( 'WARNING' === $item['type'] && $item['severity'] >= $warning_severity ) {
-				$warnings[] = $item;
+	private function get_filtered_results_by_severity( $results, $error_severity, $warning_severity ) {
+		$errors = array_filter(
+			$results,
+			function ( $item ) use ( $error_severity ) {
+				return ( 'ERROR' === $item['type'] && $item['severity'] >= $error_severity );
 			}
-		}
+		);
+
+		$warnings = array_filter(
+			$results,
+			function ( $item ) use ( $warning_severity ) {
+				return ( 'WARNING' === $item['type'] && $item['severity'] >= $warning_severity );
+			}
+		);
 
 		return array_merge( $errors, $warnings );
 	}
