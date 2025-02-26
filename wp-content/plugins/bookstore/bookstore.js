@@ -1,1 +1,1 @@
-alert('Hello from the Bookstore');
+alert( 'Hello from the Book store' );
