@@ -47,4 +47,3 @@ wp-config.php
 # uncomment the next line
 #/wp-content/themes
 wp-content/database/.ht.sqlite
-wp-content/database/.ht.sqlite
