@@ -105,7 +105,9 @@
 	<!-- Check for code WP does better -->
 	<rule ref="WordPress.WP.AlternativeFunctions">
 		<type>error</type>
-		<exclude name="WordPress.WP.AlternativeFunctions.json_encode"/>
+		<exclude name="WordPress.WP.AlternativeFunctions.json_encode_json_encode"/>
+		<exclude name="WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents"/>
+		<exclude name="WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents"/>
 	</rule>
 
 	<rule ref="Generic.PHP.ForbiddenFunctions">
@@ -153,6 +155,16 @@
 
 	<!-- Check for usage of deprecated parameter values in WP functions and provide alternative based on the parameter passed. -->
 	<rule ref="WordPress.WP.DeprecatedParameterValues">
+		<severity>7</severity>
+	</rule>
+
+	<!-- No ByteOrderMark allowed - important to prevent issues with content being sent before headers. -->
+	<rule ref="Generic.Files.ByteOrderMark">
+		<severity>7</severity>
+	</rule>
+
+	<!-- Call-time pass-by-reference has been deprecated since PHP 5.3 and should not be used. -->
+	<rule ref="Generic.Functions.CallTimePassByReference">
 		<severity>7</severity>
 	</rule>
 
