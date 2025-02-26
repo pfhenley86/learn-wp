@@ -183,17 +183,3 @@ class Baz {
         \EndsIn\CloseTag\Baz::something();
     }
 }
-
-// Issue PHPCSStandards/PHP_CodeSniffer#553.
-namespace TestMe;
-
-namespace\functionCall();
-namespace\anotherFunctionCall();
-
-class SelfMemberReference
-{
-    public function falseNegative()
-    {
-        $testResults[] = \TestMe\SelfMemberReference::test();
-    }
-}

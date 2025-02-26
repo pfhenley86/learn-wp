@@ -10,12 +10,12 @@
     ]]>
     </standard>
     <code_comparison>
-        <code title="Valid: Array keyword lowercase.">
+        <code title="Valid: array keyword lowercase">
         <![CDATA[
 $array = array('val1', 'val2');
         ]]>
         </code>
-        <code title="Invalid: First letter capitalised.">
+        <code title="Invalid: first letter capitalised">
         <![CDATA[
 $array = Array('val1', 'val2');
         ]]>
@@ -27,7 +27,7 @@ $array = Array('val1', 'val2');
     ]]>
     </standard>
     <code_comparison>
-        <code title="Valid: First key on second line.">
+        <code title="Valid: first key on second line">
         <![CDATA[
 $array = array(
           'key1' => 'value1',
@@ -35,7 +35,7 @@ $array = array(
          );
         ]]>
         </code>
-        <code title="Invalid: First key on same line.">
+        <code title="Invalid: first key on same line">
         <![CDATA[
 $array = array('key1' => 'value1',
           'key2' => 'value2',
@@ -49,7 +49,7 @@ $array = array('key1' => 'value1',
     ]]>
     </standard>
     <code_comparison>
-        <code title="Valid: Aligned correctly.">
+        <code title="Valid: aligned correctly">
         <![CDATA[
 $array = array(
          <em> </em>'key1' => 'value1',
@@ -57,7 +57,7 @@ $array = array(
          );
         ]]>
         </code>
-        <code title="Invalid: Keys and parenthesis aligned incorrectly.">
+        <code title="Invalid: keys and parenthesis aligned incorrectly">
         <![CDATA[
 $array = array(
          <em>'</em>key1' => 'value1',
@@ -72,7 +72,7 @@ $array = array(
     ]]>
     </standard>
     <code_comparison>
-        <code title="Valid: Keys and values aligned.">
+        <code title="Valid: keys and values aligned">
         <![CDATA[
 $array = array(
           'keyTen'<em>    </em>=> 'ValueTen',
@@ -80,7 +80,7 @@ $array = array(
          );
         ]]>
         </code>
-        <code title="Invalid: Alignment incorrect.">
+        <code title="Invalid: alignment incorrect">
         <![CDATA[
 $array = array(
           'keyTen'<em> </em>=> 'ValueTen',
@@ -95,7 +95,7 @@ $array = array(
     ]]>
     </standard>
     <code_comparison>
-        <code title="Valid: Comma after each value.">
+        <code title="Valid: comma after each value">
         <![CDATA[
 $array = array(
           'key1' => 'value1',
@@ -104,7 +104,7 @@ $array = array(
          );
         ]]>
         </code>
-        <code title="Invalid: No comma after last value.">
+        <code title="Invalid: no comma after last value">
         <![CDATA[
 $array = array(
           'key1' => 'value1',

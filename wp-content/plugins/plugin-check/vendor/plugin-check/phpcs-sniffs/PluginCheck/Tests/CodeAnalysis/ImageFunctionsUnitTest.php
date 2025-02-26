@@ -20,15 +20,6 @@ final class ImageFunctionsUnitTest extends AbstractSniffUnitTest {
 	 * @return array <int line number> => <int number of errors>
 	 */
 	public function getErrorList() {
-		return array();
-	}
-
-	/**
-	 * Returns the lines where warnings should occur.
-	 *
-	 * @return array <int line number> => <int number of warnings>
-	 */
-	public function getWarningList() {
 		return array(
 			1  => 1,
 			7  => 1,
@@ -40,5 +31,14 @@ final class ImageFunctionsUnitTest extends AbstractSniffUnitTest {
 			24 => 1,
 			25 => 1,
 		);
+	}
+
+	/**
+	 * Returns the lines where warnings should occur.
+	 *
+	 * @return array <int line number> => <int number of warnings>
+	 */
+	public function getWarningList() {
+		return array();
 	}
 }

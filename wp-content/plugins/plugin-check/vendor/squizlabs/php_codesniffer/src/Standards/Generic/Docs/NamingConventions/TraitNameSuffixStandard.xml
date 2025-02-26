@@ -5,14 +5,14 @@
     ]]>
     </standard>
     <code_comparison>
-        <code title="Valid: Trait name ends on 'Trait'.">
+        <code title="Valid: ">
         <![CDATA[
 trait <em>BarTrait</em>
 {
 }
         ]]>
         </code>
-        <code title="Invalid: Trait name does not end on 'Trait'.">
+        <code title="Invalid: ">
         <![CDATA[
 trait <em>Bar</em>
 {

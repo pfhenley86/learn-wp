@@ -5,14 +5,14 @@
     ]]>
     </standard>
     <code_comparison>
-        <code title="Valid: Class name starts with 'Abstract'.">
+        <code title="Valid: ">
         <![CDATA[
 abstract class <em>AbstractBar</em>
 {
 }
         ]]>
         </code>
-        <code title="Invalid: Class name does not start with 'Abstract'.">
+        <code title="Invalid: ">
         <![CDATA[
 abstract class <em>Bar</em>
 {

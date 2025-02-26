@@ -221,23 +221,15 @@ class SelfMemberReferenceSniff extends AbstractScopeSniff
      */
     protected function getNamespaceOfScope(File $phpcsFile, $stackPtr)
     {
-        $namespace = '\\';
-        $tokens    = $phpcsFile->getTokens();
+        $namespace            = '\\';
+        $namespaceDeclaration = $phpcsFile->findPrevious(T_NAMESPACE, $stackPtr);
 
-        while (($namespaceDeclaration = $phpcsFile->findPrevious(T_NAMESPACE, $stackPtr)) !== false) {
-            $nextNonEmpty = $phpcsFile->findNext(Tokens::$emptyTokens, ($namespaceDeclaration + 1), null, true);
-            if ($tokens[$nextNonEmpty]['code'] === T_NS_SEPARATOR) {
-                // Namespace operator. Ignore.
-                $stackPtr = ($namespaceDeclaration - 1);
-                continue;
-            }
-
+        if ($namespaceDeclaration !== false) {
             $endOfNamespaceDeclaration = $phpcsFile->findNext([T_SEMICOLON, T_OPEN_CURLY_BRACKET, T_CLOSE_TAG], $namespaceDeclaration);
             $namespace = $this->getDeclarationNameWithNamespace(
                 $phpcsFile->getTokens(),
                 ($endOfNamespaceDeclaration - 1)
             );
-            break;
         }
 
         return $namespace;

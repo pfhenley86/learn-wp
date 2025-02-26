@@ -5,14 +5,14 @@
     ]]>
     </standard>
     <code_comparison>
-        <code title="Valid: Lowercase constants.">
+        <code title="Valid: lowercase constants">
         <![CDATA[
 if ($var === <em>false</em> || $var === <em>null</em>) {
     $var = <em>true</em>;
 }
         ]]>
         </code>
-        <code title="Invalid: Uppercase constants.">
+        <code title="Invalid: uppercase constants">
         <![CDATA[
 if ($var === <em>FALSE</em> || $var === <em>NULL</em>) {
     $var = <em>TRUE</em>;
