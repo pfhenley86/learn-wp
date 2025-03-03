@@ -50,7 +50,7 @@ function bookstore_register_genre_taxonomy() {
 		'hierarchical' => true,
 		'rewrite'      => array( 'slug' => 'genre' ),
 		'show_in_rest' => true,
-		'rest_base'    => 'books',
+		'rest_base'    => 'genres',
 	);
 
 	register_taxonomy( 'genre', 'book', $args );

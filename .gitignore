@@ -47,3 +47,7 @@ wp-config.php
 # uncomment the next line
 #/wp-content/themes
 wp-content/database/.ht.sqlite
+wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-translator.php
+wp-content/mu-plugins/sqlite-database-integration/readme.txt
+wp-content/mu-plugins/sqlite-database-integration/load.php
+wp-content/database/.ht.sqlite
