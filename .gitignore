@@ -51,3 +51,5 @@ wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sq
 wp-content/mu-plugins/sqlite-database-integration/readme.txt
 wp-content/mu-plugins/sqlite-database-integration/load.php
 wp-content/database/.ht.sqlite
+wp-content/database/.ht.sqlite
+/wp-content/database
