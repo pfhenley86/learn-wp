@@ -10,6 +10,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+// Register Custom Post Type Meta
+add_action( 'init', 'wp_learn_register_meta' );
+function wp_learn_register_meta(){
+    register_meta(
+        'post',
+        'location',
+        array(
+            'single'       => true,
+            'type'         => 'string',
+            'default'      => '',
+            'show_in_rest' => true,
+        )
+    );
+}
+
 // Register Book Post Type
 add_action( 'init', 'bookstore_register_book_post_type' );
 function bookstore_register_book_post_type() {
