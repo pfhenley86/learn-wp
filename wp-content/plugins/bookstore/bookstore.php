@@ -43,10 +43,22 @@ function bookstore_register_book_post_type() {
 		'public'       => true,
 		'has_archive'  => true,
 		'show_in_rest' => true,
-		'supports'     => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt' ),
+		'supports'     => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'custom-fields' ),
 	);
 
 	register_post_type( 'book', $args );
+
+	register_meta(
+        'post',
+        'isbn',
+        array(
+            'single'         => true,
+            'type'           => 'string',
+            'default'        => '',
+            'show_in_rest'   => true,
+            'object_subtype' => 'book',
+        )
+    );
 }
 
 // Register Genre Taxonomy
@@ -149,4 +161,29 @@ function bookstore_admin_enqueue_scripts() {
         '1.0.0',
         true
     );
+}
+
+// Add Custom Field Before Meta
+add_action( 'rest_api_init', 'bookstore_add_rest_fields' );
+function bookstore_add_rest_fields() { 
+	register_rest_field(
+        'book',
+        'isbn',
+        array(
+            'get_callback'    => 'bookstore_rest_get_isbn',
+            'update_callback' => 'bookstore_rest_update_isbn',
+            'schema'          => array(
+                'description' => __( 'The ISBN of the book' ),
+                'type'        => 'string',
+            ),
+        )
+    );
+}
+
+function bookstore_rest_get_isbn($book){
+	return get_post_meta($book['id'], 'isbn', true);
+}
+
+function bookstore_rest_update_isbn($value, $book){
+	return update_post_meta($book->ID, 'isbn', $value);
 }
